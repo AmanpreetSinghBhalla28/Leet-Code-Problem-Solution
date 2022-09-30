@@ -8,45 +8,43 @@
  * }
  */
 class Solution {
-    
-    public boolean roodToNodePath(TreeNode root,TreeNode target, ArrayList<TreeNode> ans){
-     
-        if(root==null){
+    public boolean roodToNodePath(TreeNode root,TreeNode target, List<TreeNode> rootToNodePathList){
+        
+        if(root == null){
             return false;
         }
-        boolean res = (root == target) || roodToNodePath(root.left,target,ans)|| roodToNodePath(root.right,target,ans);
+        boolean res = (root==target) || roodToNodePath(root.left,target,rootToNodePathList) ||                                              roodToNodePath(root.right,target,rootToNodePathList);
+        
         if(res){
-            ans.add(root);
+            rootToNodePathList.add(root);
+            return true;
         }
         return res;
     }
     
-    public void printKDepth(TreeNode root,TreeNode block,int k, List<Integer> res){
+    public void printKDown(TreeNode root,int k, TreeNode block,List<Integer> ans){
         if(root==null || k<0 || root==block){
             return;
         }
         if(k==0){
-            res.add(root.val);
-            return;
+            ans.add(root.val);
         }
-        printKDepth(root.left,block,k-1,res);
+        printKDown(root.left, k-1, block,ans);
+        printKDown(root.right, k-1, block,ans);
         
-        printKDepth(root.right,block,k-1,res);
-    
     }
     public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
         
-        ArrayList<TreeNode> ans = new ArrayList<>();
-       roodToNodePath( root,target,  ans);
+        List<Integer> ans = new ArrayList<>();
         
-        List<Integer> res = new ArrayList<>();
+        List<TreeNode> rootToNodePathList = new ArrayList<>();
+        roodToNodePath(root,target,rootToNodePathList);
+        
         TreeNode block = null;
-        for(int i=0; i < ans.size();i++){
-            if(k-i>=0){
-                printKDepth(ans.get(i),block,k-i,res);
-                block = ans.get(i);
-            }
+        for(int i=0; i<rootToNodePathList.size();i++){
+            printKDown(rootToNodePathList.get(i),k-i,block,ans);
+            block = rootToNodePathList.get(i);
         }
-        return res;
+        return ans;
     }
 }
